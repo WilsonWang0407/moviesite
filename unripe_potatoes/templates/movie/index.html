@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+{% load static %}
+{% load bootstrap5 %}
+{% load bootstrap_icons %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unripe Potatoes</title>
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico'%}" type="image/x-icon">
+    {% bootstrap_css %}
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/swiper-bundle.min.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+    <div class="top-bar fixed-top">
+        <a href="/" class="logo">
+            Unripe<span>Potatoes</span>
+        </a>
+        <div class="navbar">
+            <div class="dropdown">
+                <a class="menu-link nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% bs_icon 'house-door' size='1.5rem' %}
+                    Menu
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    {% for menu_link, menu_title in menu_links.items %}
+                    <li><a class="dropdown-item" href="/movies/{{ menu_link }}">{{ menu_title }}</a></li>
+                    {% endfor %}
+                </ul> 
+            </div>
+        </div>
+        <div class="searchbox">
+            <input id="search-input" type="text" class="search-bar" placeholder="Search...">
+            <ul id="suggestions-list"></ul>
+        </div>
+        {% if logged_in == False %}
+        <button class="btn btn-link login-button" onclick="location.href='/login'">Login</button>
+        <button class="btn btn-link register-button" onclick="location.href='/register'">Sign up</button>
+        {% else %}
+        <div class="navbar">
+            <div class="dropdown">
+                <a class="user-menu menu-link nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% bs_icon 'person-circle' size='1.5rem' %} {{ user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li><a class="dropdown-item" href="/favorite">Your Favorites</a></li>
+                    <li><a class="dropdown-item" href="/feedback">Feedback</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul> 
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mobnav fixed-top">
+        <a href="/" class="logo">
+            Unripe<span>Potatoes</span>
+        </a>
+        <div id="myLinks">
+            <div class="mobsearchbox">
+                <input id="mobsearch-input" type="text" class="search-bar" placeholder="Search...">
+                <ul id="mobsuggestions-list"></ul>
+            </div>
+            {% for menu_link, menu_title in menu_links.items %}
+            <a class="dropdown-item" href="/movies/{{ menu_link }}">{{ menu_title }}</a>
+            {% endfor %}
+            {% if logged_in == False %}
+            <button class="btn btn-link login-button" onclick="location.href='/login'">Login</button>
+            <button class="btn btn-link register-button" onclick="location.href='/register'">Sign up</button>
+            {% else %}
+            <div class="dropdown">
+                <a class="user-menu menu-link nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% bs_icon 'person-circle' size='1.5rem' %} {{ user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li><a class="dropdown-item" href="/favorite">Your Favorites</a></li>
+                    <li><a class="dropdown-item" href="/feedback">Feedback</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul> 
+            </div>
+            {% endif %}
+        </div>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+            {% bs_icon 'list' size='1.2rem' %}
+        </a>
+    </div>
+
+    <section id="home-carousel">
+        <div id="home-carousel-control" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                {% for movie in carousel_movies %}
+                    {% if forloop.counter == 1 %}
+                    <a href="/movie/{{ movie.id }}" class="carousel-item active">
+                        <img src="{{ movie.poster }}" class="d-block w-100" alt="Dune part 2">
+                        <div class = "carousel-text">
+                            <h1>{{ movie.name }}</h1>
+                        </div>
+                    </a>
+                    {% else %}
+                    <a href="/movie/{{ movie.id }}" class="carousel-item">
+                        <img src="{{ movie.poster }}" class="d-block w-100" alt="Dune part 2">
+                        <div class = "carousel-text">
+                            <h1>{{ movie.name }}</h1>
+                        </div>
+                    </a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" data-bs-target="#home-carousel-control" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" data-bs-target="#home-carousel-control" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </a>
+        </div>
+    </section>
+    <section class="vertical-list popular">
+        <div class="heading"> 
+            <h2 class="heading-title"><a class="header-link" href="/movies/all">Random Picks</a></h2>
+        </div>
+        <div class="v-list-content swiper container-fluid">
+            <div class="swiper-wrapper">
+                {% for movie in popular_movies %}
+                <a href="/movie/{{ movie.id }}" class="swiper-slide">
+                    <div class="movie-box">
+                        <img src="{{ movie.thumbnail }}" alt="" class="movie-box-img">
+                        <div class="box-text">
+                            <h2 class="movie-title">{{ movie.name }}</h2>
+                            <span class="movie-type">{{ movie.genre }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
+
+    <section class="vertical-list action">
+        <div class="heading"> 
+            <h2 class="heading-title"><a class="header-link" href="/movies/action">Action</a></h2>
+        </div>
+        <div class="v-list-content swiper container-fluid">
+            <div class="swiper-wrapper">
+                {% for movie in action_movies %}
+                <a href="/movie/{{ movie.id }}" class="swiper-slide">
+                    <div class="movie-box">
+                        <img src="{{ movie.thumbnail }}" alt="" class="movie-box-img">
+                        <div class="box-text">
+                            <h2 class="movie-title">{{ movie.name }}</h2>
+                            <span class="movie-type">{{ movie.genre }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
+
+    <section class="vertical-list comedy">
+        <div class="heading"> 
+            <h2 class="heading-title"><a class="header-link" href="/movies/comedy">Comedies</a></h2>
+        </div>
+        <div class="v-list-content swiper container-fluid">
+            <div class="swiper-wrapper">
+                {% for movie in comedy_movies %}
+                <a href="/movie/{{ movie.id }}" class="swiper-slide">
+                    <div class="movie-box">
+                        <img src="{{ movie.thumbnail }}" alt="" class="movie-box-img">
+                        <div class="box-text">
+                            <h2 class="movie-title">{{ movie.name }}</h2>
+                            <span class="movie-type">{{ movie.genre }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
+
+    <div class="footer">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center">
+        <div class="col-md-4 d-flex align-items-center">
+            <span class="team-text">Team 18</span>
+        </div>
+    
+        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+            <li class="ms-3"><a class="youtube-link" href="https://youtu.be/dQw4w9WgXcQ" target="_blank">{% bs_icon 'youtube' size='1.5em' %}</i></a></li>
+        </ul>
+        </footer>
+    </div>
+
+    <script src="{% static 'js/swiper-bundle.min.js' %}"></script>
+    {% bootstrap_javascript %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
+</body>
+</html>

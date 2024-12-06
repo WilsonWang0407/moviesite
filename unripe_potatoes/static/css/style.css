@@ -1,0 +1,261 @@
+:root{
+    --bg-color: #000814; /* 14, 19, 31 */
+    --menu-bg-color: #888888; /* 136, 136, 136 */
+    --primary-color: #001D3D; /* 0, 29, 61 */
+    --secondary-color: #003566; /* 0, 53, 102 */
+    --tertiary-color: #38405F; /* 56, 64, 95 */
+    --contrast-color: #661b1c; /* 28, 27, 102 */
+    --contrast-lighter-color: #FF0035; /* 255, 0, 53 */
+    --text-color: #f5f5f5; /* 245, 245, 245 */
+    --text-darker-color: #b5b5b5; /* 245, 245, 245 */
+}
+
+body {
+    background-color: var(--bg-color);
+}
+
+/* Top bar */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(14, 19, 31, 0.9);
+    padding: 0 100px;
+    height: 76px;
+}
+
+.menu-button,
+.title-button,
+.search-bar,
+.login-button {
+    padding: 10px;
+    margin-right: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.menu-button {
+    background-color: var(--menu-bg-color);
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 14%;
+    cursor: pointer;
+}
+
+.menu-button span {
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+.logo,
+.logo:hover,
+.logo:active,
+.logo:focus {
+    padding: 5px;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--text-color);
+    text-transform: uppercase;
+    margin: 0 auto 0 0;
+    text-decoration: none;
+}
+
+.logo span{
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--contrast-color);
+}
+
+.title-button span {
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+.title-text {
+    text-align: center;
+}
+
+.menu-link {
+    color: var(--text-color);
+    text-transform: uppercase;
+    display: flex;
+}
+
+.menu-link::after {
+    display: none;
+}
+
+.menu-link svg {
+    margin-right: 5px;
+}
+
+.menu-link:hover,
+.menu-link:focus,
+.menu-link:active,
+.login-button:hover,
+.login-button:focus,
+.login-button:active {
+    color: var(--text-darker-color);
+}
+
+.searchbar {
+    background-color: var(--text-color);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    width: 48%;
+}
+
+#suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--text-color);
+    border: 1px solid var(--text-darker-color);
+}
+
+#suggestions-list li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+#suggestions-list li:hover {
+    background-color: var(--menu-bg-color);
+}
+
+#suggestions-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.register-button,
+.login-button {
+    color: var(--text-color);
+    border: none;
+    font-size: larger;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.register-button {
+    color: var(--contrast-lighter-color);
+    font-weight: 700;
+    border: 2px solid var(--contrast-lighter-color);
+    border-radius: 5px;
+}
+
+.register-button:hover,
+.register-button:focus {
+    color: var(--text-color);
+}
+
+footer {
+    background-color: var(--tertiary-color);
+    padding: 30px;
+}
+
+.footer .team-text,
+.footer .youtube-link svg {
+    color: var(--text-color);
+}
+
+.mobnav {
+    display: none;
+}
+
+@media only screen and (max-width: 820px) {
+    .top-bar{
+        padding: 0 75px;
+    }
+    .register-button,
+    .login-button {
+        font-size: medium;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .top-bar{
+        padding: 0 50px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .top-bar{
+        display: none;
+    }
+
+    .mobnav {
+        display: block;
+        overflow: hidden;
+        background-color: rgba(14, 19, 31, 0.9);
+        position: relative;
+    }
+    
+    .mobnav #myLinks {
+        display: none;
+    }
+    
+    .mobnav a {
+        color: var(--text-color);
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+        display: block;
+    }
+
+    .mobnav a span {
+        font-size: 17px;
+    }
+    
+    .mobnav a.icon {
+        background: var(--primary-color);
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    
+    .mobnav a:hover {
+        background-color: var(--tertiary-color);
+        color: var(--bg-color);
+    }
+
+    .mobsearchbar {
+        width: 100%;
+    }
+
+    #mobsuggestions-list {
+        z-index: 1100;
+    }
+
+    .mobsearchbar {
+        background-color: var(--text-color);
+        border: 1px solid var(--text-darker-color);
+        border-radius: 5px;
+        padding: 5px;
+    }
+    
+    #mobsuggestions-list {
+        background-color: var(--text-color);
+        border: 1px solid var(--text-darker-color);
+    }
+    
+    #mobsuggestions-list li {
+        padding: 10px;
+        cursor: pointer;
+    }
+    
+    #mobsuggestions-list li:hover {
+        background-color: var(--menu-bg-color);
+    }
+    
+    #mobsuggestions-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+}

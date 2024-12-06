@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+{% load static %}
+{% load bootstrap5 %}
+{% load bootstrap_icons %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Unripe Potatoes</title>
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico'%}" type="image/x-icon">
+    {% bootstrap_css %}
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/swiper-bundle.min.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+</head>
+<body>
+    <div class="top-bar fixed-top">
+        <a href="/" class="logo">
+            Unripe<span>Potatoes</span>
+        </a>
+        <div class="navbar">
+            <div class="dropdown">
+                <a class="menu-link nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% bs_icon 'house-door' size='1.5rem' %}
+                    Menu
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    {% for menu_link, menu_title in menu_links.items %}
+                    <li><a class="dropdown-item" href="/movies/{{ menu_link }}">{{ menu_title }}</a></li>
+                    {% endfor %}
+                </ul> 
+            </div>
+        </div>
+        <div class="searchbox">
+            <input id="search-input" type="text" class="search-bar" placeholder="Search...">
+            <ul id="suggestions-list"></ul>
+        </div>
+        {% if logged_in == False %}
+        <button class="btn btn-link login-button" onclick="location.href='/login'">Login</button>
+        <button class="btn btn-link register-button" onclick="location.href='/register'">Sign up</button>
+        {% else %}
+        <div class="navbar">
+            <div class="dropdown">
+                <a class="user-menu menu-link nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% bs_icon 'person-circle' size='1.5rem' %} {{ user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li><a class="dropdown-item" href="/favorite">Your Favorites</a></li>
+                    <li><a class="dropdown-item" href="/feedback">Feedback</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul> 
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mobnav fixed-top">
+        <a href="/" class="logo">
+            Unripe<span>Potatoes</span>
+        </a>
+        <div id="myLinks">
+            <div class="mobsearchbox">
+                <input id="mobsearch-input" type="text" class="search-bar" placeholder="Search...">
+                <ul id="mobsuggestions-list"></ul>
+            </div>
+            {% for menu_link, menu_title in menu_links.items %}
+            <a class="dropdown-item" href="/movies/{{ menu_link }}">{{ menu_title }}</a>
+            {% endfor %}
+            {% if logged_in == False %}
+            <button class="btn btn-link login-button" onclick="location.href='/login'">Login</button>
+            <button class="btn btn-link register-button" onclick="location.href='/register'">Sign up</button>
+            {% else %}
+            <div class="dropdown">
+                <a class="user-menu menu-link nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% bs_icon 'person-circle' size='1.5rem' %} {{ user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li><a class="dropdown-item" href="/favorite">Your Favorites</a></li>
+                    <li><a class="dropdown-item" href="/feedback">Feedback</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul> 
+            </div>
+            {% endif %}
+        </div>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+            {% bs_icon 'list' size='1.2rem' %}
+        </a>
+    </div>
+    
+    <div class="login">
+        <div class="container">
+            <h2>Create Your Account</h2>
+            <form method="post" action="/register"> <!-- Update action as per your URL configuration -->
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="Username">
+                <input type="email" name="email" placeholder="Email">
+                <input type="password" name="password1" placeholder="Password">
+                <input type="password" name="password2" placeholder="Confirm Password">
+                <div class="btns">
+                    <button class="login-btn btn" type="submit">Register</button>
+                    <a class="register-link btn btn-dark"  href="/login" class="btn">Login</a>
+                </div>
+                {% if form.errors %}
+                <div class="alert alert-danger error" role="alert">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    <div class="footer">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center">
+        <div class="col-md-4 d-flex align-items-center">
+            <span class="team-text">Team 18</span>
+        </div>
+    
+        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+            <li class="ms-3"><a class="youtube-link" href="https://youtu.be/dQw4w9WgXcQ" target="_blank">{% bs_icon 'youtube' size='1.5em' %}</i></a></li>
+        </ul>
+        </footer>
+    </div>
+
+    {% bootstrap_javascript %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="{% static 'js/search.js' %}"></script>
+</body>
+</html>

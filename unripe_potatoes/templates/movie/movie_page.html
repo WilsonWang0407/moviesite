@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+{% load static %}
+{% load bootstrap5 %}
+{% load bootstrap_icons %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} | Unripe Potatoes</title>
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico'%}" type="image/x-icon">
+    {% bootstrap_css %}
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/movie_page.css' %}">
+</head>
+<body>
+    <div class="top-bar fixed-top">
+        <a href="/" class="logo">
+            Unripe<span>Potatoes</span>
+        </a>
+        <div class="navbar">
+            <div class="dropdown">
+                <a class="menu-link nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% bs_icon 'house-door' size='1.5rem' %}
+                    Menu
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    {% for menu_link, menu_title in menu_links.items %}
+                    <li><a class="dropdown-item" href="/movies/{{ menu_link }}">{{ menu_title }}</a></li>
+                    {% endfor %}
+                </ul> 
+            </div>
+        </div>
+        <div class="searchbox">
+            <input id="search-input" type="text" class="search-bar" placeholder="Search...">
+            <ul id="suggestions-list"></ul>
+        </div>
+        {% if logged_in == False %}
+        <button class="btn btn-link login-button" onclick="location.href='/login'">Login</button>
+        <button class="btn btn-link register-button" onclick="location.href='/register'">Sign up</button>
+        {% else %}
+        <div class="navbar">
+            <div class="dropdown">
+                <a class="user-menu menu-link nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% bs_icon 'person-circle' size='1.5rem' %} {{ user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li><a class="dropdown-item" href="/favorite">Your Favorites</a></li>
+                    <li><a class="dropdown-item" href="/feedback">Feedback</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul> 
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mobnav fixed-top">
+        <a href="/" class="logo">
+            Unripe<span>Potatoes</span>
+        </a>
+        <div id="myLinks">
+            <div class="mobsearchbox">
+                <input id="mobsearch-input" type="text" class="search-bar" placeholder="Search...">
+                <ul id="mobsuggestions-list"></ul>
+            </div>
+            {% for menu_link, menu_title in menu_links.items %}
+            <a class="dropdown-item" href="/movies/{{ menu_link }}">{{ menu_title }}</a>
+            {% endfor %}
+            {% if logged_in == False %}
+            <button class="btn btn-link login-button" onclick="location.href='/login'">Login</button>
+            <button class="btn btn-link register-button" onclick="location.href='/register'">Sign up</button>
+            {% else %}
+            <div class="dropdown">
+                <a class="user-menu menu-link nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% bs_icon 'person-circle' size='1.5rem' %} {{ user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li><a class="dropdown-item" href="/favorite">Your Favorites</a></li>
+                    <li><a class="dropdown-item" href="/feedback">Feedback</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul> 
+            </div>
+            {% endif %}
+        </div>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+            {% bs_icon 'list' size='1.2rem' %}
+        </a>
+    </div>
+
+    <div class="movie-header">
+        <img src="{{ movie.poster }}" alt="" class="movie-poster-img">
+        <div class="movie-header-info">
+            <img src="{{ movie.thumbnail }}" class="movie-thumbnail-img">
+            <div class = "movie-header-text">
+                <h1>{{ movie.name }}</h1>
+                <div class = "tags">
+                    <span>{{ movie.genre }}</span>
+                    <span>({{ movie.year }})</span>
+                    {% if favorite == True %}
+                    <button class="btn btn-link fav-button" data-bs-toggle="tooltip" data-bs-placement="top" title="Remove from favorites" value={{ movie.id }}>
+                        {% bs_icon 'heart-fill' size='1.5rem' color='#661b1c' %}
+                    </button>
+                    {% else %}
+                    <button class="btn btn-link fav-button" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to favorites" value={{ movie.id }}>
+                        {% bs_icon 'plus-circle-fill' size='1.5rem' color='#661b1c' %}
+                    </button>
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="description-ratings">
+        <div class="description">
+            <div class="description-header">
+                <h1>Plot</h1>
+            </div>
+            <p class="description-text">{{ movie.description }}</p>
+            <p class="description-text"><a href="{{ movie.link }}">Click here to find the best way to watch {{ title }}</a> powered by JustWatch.</p>
+        </div>
+        <div class="ratings">
+            <div class="ratings-header">
+                <h1>Rating</h1>
+            </div>
+            <p>
+                {% bs_icon 'star-fill' size='1.5em' color='#661b1c' %} <span>{{ rating }}</span>
+            </p>
+            {% if logged_in == True %}
+                {% if already_rated == True %}
+                <p>You rated: {{ user_rating }} / 10</p>
+                {% else %}
+                <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Click here to rate {{ title }}
+                </button>                      
+                {% endif %}
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="comments">
+        <div class="comments-header">
+            <h1>Comments</h1>
+        </div>
+        {% if comments_length == 0 %}
+        <div class="comment">
+            <div class="comment-text">
+                <p>Be the first one to comment.</p>
+            </div>
+        </div>
+        {% else %}
+            {% for comment in comments %}
+            <div class="comment">
+                <div class="user">
+                    <h2>{{ comment.user.username }}</h2>
+                </div>
+                <div class="comment-text">
+                    <p>{{ comment.comment }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+        {% if logged_in == True %}
+        <div class="comment">
+            <form action="/movie/{{ movie.id }}" method="post">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                <button class="btn btn-dark" type="submit">Add Comment</button>
+            </form>
+        </div>
+        {% endif %}
+    </section>
+
+    <div class="footer">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center">
+        <div class="col-md-4 d-flex align-items-center">
+            <span class="team-text">Team 18</span>
+        </div>
+    
+        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+            <li class="ms-3"><a class="youtube-link" href="https://youtu.be/dQw4w9WgXcQ" target="_blank">{% bs_icon 'youtube'  size='1.5em' %}</i></a></li>
+        </ul>
+        </footer>
+    </div>
+    {% if logged_in == True and already_rated == False %}
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Rate {{ title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="ratingForm" method="get" action='/add-rating'>
+                    <div class="modal-body">
+                        <div class="stars" data-rating="0">
+                            <span class="star" data-value="1">&#9733;</span>
+                            <span class="star" data-value="2">&#9733;</span>
+                            <span class="star" data-value="3">&#9733;</span>
+                            <span class="star" data-value="4">&#9733;</span>
+                            <span class="star" data-value="5">&#9733;</span>
+                            <span class="star" data-value="6">&#9733;</span>
+                            <span class="star" data-value="7">&#9733;</span>
+                            <span class="star" data-value="8">&#9733;</span>
+                            <span class="star" data-value="9">&#9733;</span>
+                            <span class="star" data-value="10">&#9733;</span>
+                            <span class="display">0 / 10</span>
+                        </div>
+                        <input type="hidden" name="rating" id="ratingInput">
+                        <input type="hidden" name="movie_id" id="movieInput" value="{{ movie.id }}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit Your Rating</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% bootstrap_javascript %}
+    <script src="{% static 'js/rating.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
+    <script src="{% static 'js/favorite.js' %}"></script>
+</body>
+</html>
